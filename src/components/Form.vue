@@ -20,20 +20,20 @@
 
     </div>
     <label for="formFileLg" class="form-label"
-      >Seleccione archivo con datos e inmediatamente será cargado</label
+      >Please choose the file to upload</label
     >
     <br>
 
-    <input type="text" v-model="search" placeholder="Buscar por nombre" class="my-3" />
+    <input type="text" v-model="search" placeholder="Search by Name" class="my-3" />
 
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>Nombre</th>
+          <th>Name</th>
           <th>RNA MLP</th>
           <th>SVM</th>
           <th>Random Forest</th>
-          <th>Moda</th>
+          <th>Mode</th>
 
         </tr>
       </thead>
@@ -119,7 +119,7 @@ export default {
   methods: {
       onClick() {
 
-        fetch(process.env.VUE_API+'/api/predict/example/', {
+        fetch(process.env.VUE_APP_API+'api/predict/example/', {
             headers: {
               'Content-Type': 'text/csv'
             },
