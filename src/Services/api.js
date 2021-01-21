@@ -1,8 +1,9 @@
 
-const BASE_URL = 'https://default-credit.herokuapp.com/';
+// const BASE_URL = 'https://default-credit.herokuapp.com/';
+const BASE_URL = process.env.VUE_API;
 
 async function upload(formData) {
-    const url = `${BASE_URL}api/predict/uploadfile/ `;
+    const url = `${BASE_URL}/api/predict/uploadfile/ `;
     const response =await fetch(url, {
         method: 'POST',
         body: formData

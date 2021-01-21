@@ -11,10 +11,13 @@
           type="file"
         />
       </form>
-      <!-- <a class="btn btn-primary" href="" role="button">Call to action</a> -->
       <a class="btn btn-primary mx-2" role="button" v-on:click="clean">
-        <i class="fas fa-minus-circle"></i> Limpiar</a
+        <i class="fas fa-minus-circle"></i> Clean</a
       >
+      <a class="btn btn-info mx-2" role="button" v-on:click="onClick">
+        <i class="fas fa-cloud-download-alt"></i> Get example.csv</a
+      >
+
     </div>
     <label for="formFileLg" class="form-label"
       >Seleccione archivo con datos e inmediatamente será cargado</label
@@ -27,17 +30,34 @@
       <thead>
         <tr>
           <th>Nombre</th>
-          <th>Model 1</th>
-          <th>Model 2</th>
-          <th>Model 3</th>
+          <th>RNA MLP</th>
+          <th>SVM</th>
+          <th>Random Forest</th>
+          <th>Moda</th>
+
         </tr>
       </thead>
       <tbody>
         <tr v-for="row in rows" :key="row.id">
-          <td>{{ row.nombre }}</td>
-          <td>{{ row.model1 }}</td>
-          <td>{{ row.model2 }}</td>
-          <td>{{ row.model3 }}</td>
+          <td>{{ row.Name }}</td>
+          <td>
+              <i v-if="row.model1>0" class="fas fa-check-double"></i>
+              <i v-else class="fas fa-skull-crossbones"></i>
+          </td>
+
+          <td>
+            <i v-if="row.model2>0" class="fas fa-check-double"></i>
+            <i v-else class="fas fa-skull-crossbones"></i>
+          </td>
+
+          <td>
+            <i v-if="row.model3>0" class="fas fa-check-double"></i>
+            <i v-else class="fas fa-skull-crossbones"></i>
+          </td>
+          <td>
+            <i v-if="row.mode>0" class="fas fa-check-double"></i>
+            <i v-else class="fas fa-skull-crossbones"></i>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -77,11 +97,13 @@
         </li>
       </ul>
     </nav>
+
   </div>
 </template>
 
 <script>
 import { upload } from "../Services/api";
+import { saveAs } from 'file-saver';
 
 export default {
   name: "Form",
@@ -95,6 +117,16 @@ export default {
     };
   },
   methods: {
+      onClick() {
+
+        fetch(process.env.VUE_API+'/api/predict/example/', {
+            headers: {
+              'Content-Type': 'text/csv'
+            },
+            responseType: 'blob'
+          }).then(response => response.blob())
+            .then(blob => saveAs(blob, 'Example.csv'));
+      },
     filesChange(fieldName, fileList) {
       const formData = new FormData();
       if (!fileList.length) return;
@@ -103,6 +135,7 @@ export default {
 
       upload(formData).then((response) => {
         this.predictions = response;
+        console.log(response);
       });
     },
     setPages() {
@@ -116,11 +149,11 @@ export default {
       let perPage = this.perPage;
       let from = page * perPage - perPage;
       let to = page * perPage;
-      console.log(predictions.slice(from, to));
       return predictions.slice(from, to);
     },
     clean() {
       this.predictions = [];
+      this.pages=[];
     },
   },
   computed: {
